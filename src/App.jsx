@@ -10,7 +10,7 @@ const STATES = ["ABIERTA","CERRADA","ROLL","ASIGNADA","VENDIDA"];
 const emptyRow = {
   id: "",
   fechaInicio: "",
-  fechaVencimiento: "",
+  fechaVencimiento: "",   // ✅ ya estaba; lo dejamos igual
   fechaCierre: "",
   ticker: "",
   estrategia: "CSP",
@@ -87,6 +87,7 @@ export default function App(){
   }
 
   function exportCSV(){
+    // ✅ añadimos fechaVencimiento después de fechaInicio
     const headers = ["fechaInicio","fechaVencimiento","fechaCierre","ticker","estrategia","precioCompra","acciones","strike","primaRecibida","comision","costoCierre","estado","precioCierre","notas"];
     const escape = v => `"${String(v??"").replace(/"/g,'""')}"`;
     const lines = [headers.join(",")];
@@ -196,7 +197,8 @@ export default function App(){
             <table className="min-w-full text-sm">
               <thead>
                 <tr className="text-left text-neutral-500">
-                  {["Inicio","Cierre","Ticker","Estrategia","Acciones","Strike","Prima","Comisión","Costo Cierre","Estado","Notas",""].map(h=>(
+                  {/* ✅ Insertamos Vencimiento entre Inicio y Cierre */}
+                  {["Inicio","Vencimiento","Cierre","Ticker","Estrategia","Acciones","Strike","Prima","Comisión","Costo Cierre","Estado","Notas",""].map(h=>(
                     <th key={h} className="px-2 py-2 whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
@@ -205,6 +207,8 @@ export default function App(){
                 {rows.map(r=> (
                   <tr key={r.id} className="border-t">
                     <td className="px-2 py-2">{r.fechaInicio}</td>
+                    {/* ✅ Nueva celda con la fecha de vencimiento */}
+                    <td className="px-2 py-2">{r.fechaVencimiento}</td>
                     <td className="px-2 py-2">{r.fechaCierre}</td>
                     <td className="px-2 py-2 font-medium">{r.ticker}</td>
                     <td className="px-2 py-2">{r.estrategia}</td>
@@ -280,6 +284,12 @@ function TradeForm({ form, setForm, onSave, onCancel }){
       <FormRow label="Acciones"><input type="number" className="w-full border rounded-xl px-3 py-2" value={form.acciones} onChange={e=>update("acciones", e.target.value)} /></FormRow>
       <FormRow label="Strike"><input type="number" step="0.01" className="w-full border rounded-xl px-3 py-2" value={form.strike} onChange={e=>update("strike", e.target.value)} /></FormRow>
 
+      {/* ✅ NUEVO: Fecha de Vencimiento (solo este bloque) */}
+      <FormRow label="Fecha Vencimiento">
+        <input type="date" className="w-full border rounded-xl px-3 py-2"
+               value={form.fechaVencimiento || ""} onChange={e=>update("fechaVencimiento", e.target.value)} />
+      </FormRow>
+
       <FormRow label="Precio Compra"><input type="number" step="0.01" className="w-full border rounded-xl px-3 py-2" value={form.precioCompra} onChange={e=>update("precioCompra", e.target.value)} /></FormRow>
       <FormRow label="Prima Recibida"><input type="number" step="0.01" className="w-full border rounded-xl px-3 py-2" value={form.primaRecibida} onChange={e=>update("primaRecibida", e.target.value)} /></FormRow>
       <FormRow label="Comisión"><input type="number" step="0.01" className="w-full border rounded-xl px-3 py-2" value={form.comision} onChange={e=>update("comision", e.target.value)} /></FormRow>
@@ -305,3 +315,4 @@ function TradeForm({ form, setForm, onSave, onCancel }){
     </div>
   );
 }
+

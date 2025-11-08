@@ -10,6 +10,7 @@ const STATES = ["ABIERTA","CERRADA","ROLL","ASIGNADA","VENDIDA"];
 const emptyRow = {
   id: "",
   fechaInicio: "",
+  fechaVencimiento: "",
   fechaCierre: "",
   ticker: "",
   estrategia: "CSP",
@@ -86,7 +87,7 @@ export default function App(){
   }
 
   function exportCSV(){
-    const headers = ["fechaInicio","fechaCierre","ticker","estrategia","precioCompra","acciones","strike","primaRecibida","comision","costoCierre","estado","precioCierre","notas"];
+    const headers = ["fechaInicio","fechaVencimiento","fechaCierre","ticker","estrategia","precioCompra","acciones","strike","primaRecibida","comision","costoCierre","estado","precioCierre","notas"];
     const escape = v => `"${String(v??"").replace(/"/g,'""')}"`;
     const lines = [headers.join(",")];
     rows.forEach(r=>{

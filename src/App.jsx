@@ -1,4 +1,5 @@
 import { db } from "./firebase";
+console.log("🔥 Firestore conectado:", db);
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Plus, Save, Trash2 } from "lucide-react";
@@ -97,7 +98,7 @@ export default function App(){
       const ref = await addDoc(collection(db, "operaciones"), withId);
       withId.id = ref.id;
     }
-
+    console.log("Guardando en Firestore:", withId);
     setRows(prev=>{
       const i = prev.findIndex(p=>p.id===withId.id);
       if(i>=0){ const next=[...prev]; next[i]=withId; return next; }

@@ -1,5 +1,7 @@
 import { db } from "./firebase";
 console.log("🔥 Firestore conectado:", db);
+console.log("Proyecto:", db.app?.options?.projectId);
+
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Plus, Save, Trash2 } from "lucide-react";

@@ -3,12 +3,13 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "TU_API_KEY_AQUI",
-  authDomain: "TU_AUTH_DOMAIN_AQUI",
-  projectId: "TU_PROJECT_ID_AQUI",
-  storageBucket: "TU_STORAGE_BUCKET_AQUI",
-  messagingSenderId: "TU_SENDER_ID_AQUI",
-  appId: "TU_APP_ID_AQUI",
+  apiKey: "AIzaSyBFps3GRnlyumFb9d1gTX-YqCePgNaxa3s",
+  authDomain: "bitacora-ef9b5.firebaseapp.com",
+  projectId: "bitacora-ef9b5",
+  storageBucket: "bitacora-ef9b5.firebasestorage.app",
+  messagingSenderId: "313158303573",
+  appId: "1:313158303573:web:748f5f7827db70bd5d39dc",
+  measurementId: "G-HL3KCZPGCN"
 };
 
 export const app = initializeApp(firebaseConfig);

@@ -1,3 +1,5 @@
+import { db } from "./firebase";
+import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Plus, Save, Trash2 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip as RTooltip, ResponsiveContainer } from "recharts";
@@ -48,6 +50,19 @@ export default function App(){
   const [form, setForm] = useState({...emptyRow});
 
   useEffect(()=>{ localStorage.setItem(STORAGE_KEY, JSON.stringify(rows)); }, [rows]);
+  useEffect(()=>{
+  const fetchData = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "operaciones"));
+      const docs = querySnapshot.docs.map(doc => doc.data());
+      if (docs.length > 0) setRows(docs);
+    } catch (e) {
+      console.error("Error al leer Firestore:", e);
+    }
+  };
+  fetchData();
+}, []);
+
 
   const stats = useMemo(()=>{
     const primas = rows.reduce((s,r)=> s+parseNumber(r.primaRecibida), 0);
@@ -68,23 +83,47 @@ export default function App(){
     return { count: rows.length, primas, costos, neto, mensual, byTicker };
   }, [rows]);
 
-  function saveRow(){
-    if(!form.ticker) return notify("Ingresa el ticker");
-    const withId = form.id? form : { ...form, id: Date.now().toString() };
+  async function saveRow(){
+  if(!form.ticker) return notify("Ingresa el ticker");
+  const withId = form.id ? form : { ...form, id: Date.now().toString() };
+
+  try {
+    if (form.id) {
+      // Actualiza una operación existente
+      const ref = doc(db, "operaciones", form.id);
+      await updateDoc(ref, withId);
+    } else {
+      // Crea una nueva operación
+      const ref = await addDoc(collection(db, "operaciones"), withId);
+      withId.id = ref.id;
+    }
+
     setRows(prev=>{
       const i = prev.findIndex(p=>p.id===withId.id);
       if(i>=0){ const next=[...prev]; next[i]=withId; return next; }
       return [withId, ...prev];
     });
+
     setShowModal(false);
     setForm({...emptyRow});
-    notify("Operación guardada.");
+    notify("Operación guardada en la nube ✅");
+  } catch (error) {
+    console.error("Error al guardar en Firestore:", error);
+    notify("Error al guardar en Firestore");
   }
+}
 
-  function removeRow(id){
-    if(!confirm("¿Eliminar operación?")) return;
+  async function removeRow(id){
+  if(!confirm("¿Eliminar operación?")) return;
+  try {
+    await deleteDoc(doc(db, "operaciones", id));
     setRows(prev=>prev.filter(r=>r.id!==id));
+    notify("Operación eliminada de la nube");
+  } catch (e) {
+    console.error("Error al eliminar:", e);
+    notify("Error al eliminar de Firestore");
   }
+}
 
   function exportCSV(){
     // ✅ añadimos fechaVencimiento después de fechaInicio

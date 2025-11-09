@@ -1,5 +1,5 @@
+// src/firebase.js
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -12,6 +12,12 @@ const firebaseConfig = {
   measurementId: "G-HL3KCZPGCN"
 };
 
-export const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+// Inicializa la app
+const app = initializeApp(firebaseConfig);
+
+// Inicializa Firestore
 export const db = getFirestore(app);
+
+// Mensaje de prueba en consola
+console.log("🔥 Firestore conectado:", db);
+console.log("Proyecto:", app.options.projectId);

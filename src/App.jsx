@@ -171,6 +171,18 @@ export default function App(){
 
   const monthData = Object.entries(stats.mensual).map(([k,v])=>({mes:k, neto:v}));
   const tickerData = Object.entries(stats.byTicker).map(([k,v])=>({ticker:k||"(sin)", neto:v}));
+  async function testWrite() {
+  try {
+    const ref = await addDoc(collection(db, "__test__"), {
+      timestamp: new Date().toISOString(),
+      prueba: "ok",
+    });
+    alert("✅ Escribió en Firestore. ID: " + ref.id);
+  } catch (e) {
+    console.error("❌ Error al escribir:", e);
+    alert("Error: " + e.message);
+  }
+}
 
   return (
     <div className="min-h-screen bg-neutral-50 p-4 md:p-8">
